@@ -1,0 +1,73 @@
+{
+  "license": "MIT",
+  "name": "extension-examples",
+  "version": "0.8.0",
+  "description": "Looker extension examples",
+  "author": "Looker",
+  "private": true,
+  "workspaces": [
+    "react/javascript/*",
+    "react/typescript/*",
+    "vanilla/*"
+  ],
+  "scripts": {
+    "bootstrap": "lerna bootstrap",
+    "lerna": "lerna",
+    "clean": "lerna run --parallel clean",
+    "build": "lerna run --parallel build",
+    "lint": "lerna run --parallel lint:es",
+    "lint:fix": "lerna run --parallel lint:es:fix",
+    "tsc": "lerna run --parallel tsc",
+    "test": "lerna run --parallel test",
+    "uberext": "ts-node ./scripts/create_uber_extension_project.ts",
+    "update_packages": "ts-node ./scripts/update_packages.ts",
+    "dev:demo-core-sdk": "yarn workspace demo-core-sdk develop",
+    "dev:demo-embeds": "yarn workspace demo-embeds develop",
+    "dev:demo-extension-sdk": "yarn workspace demo-extension-sdk develop",
+    "dev:demo-external-api": "yarn workspace demo-external-api develop",
+    "dev:file-download": "yarn workspace file-download develop",
+    "dev:file-upload": "yarn workspace file-upload develop",
+    "dev:file-upload-server": "yarn workspace file-upload server",
+    "dev:helloworld-js": "yarn workspace helloworld-js develop",
+    "dev:map-iframe": "yarn workspace map-iframe develop",
+    "dev:access-key-demo": "cd react/typescript/access-key-demo && yarn develop",
+    "dev:access-key-demo-server": "cd react/typescript/access-key-demo && yarn start-server",
+    "dev:helloworld-ts": "cd react/typescript/helloworld-ts && yarn develop",
+    "dev:kitchensink": "cd react/typescript/kitchensink && yarn develop",
+    "dev:looks-query": "cd react/typescript/looks-query-redux && yarn develop",
+    "dev:looks-query-redux": "cd react/typescript/looks-query-redux && yarn develop",
+    "dev:counter": "cd vanilla/counter && yarn develop",
+    "dev:counter-ts": "cd vanilla/counter-ts && yarn develop"
+  },
+  "devDependencies": {
+    "@types/node": "^15.3.0",
+    "@types/readable-stream": "^2.3.13",
+    "@types/request": "^2.48.8",
+    "@types/request-promise-native": "^1.0.18",
+    "@types/yargs": "^16.0.2",
+    "lerna": "^4.0.0"
+  },
+  "dependencies": {
+    "@google-cloud/bigquery": "^5.11.0",
+    "@looker/components-date": "^3.0.4",
+    "@looker/extension-sdk": "^22.2.0",
+    "@looker/extension-utils": "^0.1.6",
+    "@looker/sdk": "^22.2.0",
+    "@looker/sdk-node": "^22.2.0",
+    "@looker/sdk-rtl": "^21.3.2",
+    "date-fns": "^2.28.0",
+    "express": "^4.17.3",
+    "i18next": "^21.6.14",
+    "nodemon": "^2.0.15",
+    "npm-run-all": "^4.1.5",
+    "react-datepicker": "^4.7.0",
+    "react-i18next": "^11.16.2",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.5.2",
+    "yargs": "^17.0.1"
+  },
+  "resolutions": {
+    "trim": ">= 0.0.3",
+    "ansi-regex": "5.0.1"
+  }
+}
