@@ -61,6 +61,7 @@ const {extensionSDK} = extensionContext
             name
       })
     })
+	console.log(res)
       } catch (err) {
         console.log(err);
       }

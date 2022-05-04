@@ -1,12 +1,13 @@
 import React, {useContext, useState, useEffect } from 'react';
 import { ExtensionContext2 } from '@looker/extension-sdk-react';
-import { Page, Form, Button, Text, FieldText, Fieldset, Divider, Box2, Space, Select, Grid, Popover, IconButton, ProgressCircular } from '@looker/components';
+import * as htmlElements from '@looker/components';
 import { CalendarDay } from '@looker/icons';
 import { InputDate } from '@looker/components-date';
 import i18n from 'i18next';
 import { format } from 'date-fns';
 
 export const IncidenciasEmbed = ({ embedType }) => {
+	const [meses, setMeses] = useState();
 	const [selectedDate, setSelectedDate] = useState(new Date(Date.now()));
 	const [selectedDateFormated, setselectedDateFormated] = useState();
 	const [cadenasOrigen, setCadenasOrigen] = useState();
@@ -27,11 +28,27 @@ export const IncidenciasEmbed = ({ embedType }) => {
 	useEffect(() => {
 		setProgress(false);
 		callLang();
-		GetCadenas();
+		panelLoad();
 	}, []);
 
-	const GetCadenas = async () => {
-		// console.log("handleCadenas");
+	const panelLoad = async () => {
+		const listaMeses = [{ id: '01', value: '01', label: 'ENE' },
+		{ id: '02', value: '02', label: 'FEB' },
+		{ id: '03', value: '03', label: 'MAR' },
+		{ id: '04', value: '04', label: 'ABR' },
+		{ id: '05', value: '05', label: 'MAY' },
+		{ id: '06', value: '06', label: 'JUN' },
+		{ id: '07', value: '07', label: 'JUL' },
+		{ id: '08', value: '08', label: 'AGO' },
+		{ id: '09', value: '09', label: 'SEP' },
+		{ id: '10', value: '10', label: 'OCT' },
+		{ id: '11', value: '11', label: 'NOV' },
+		{ id: '12', value: '12', label: 'DIC' }]
+		setMeses(listaMeses.map((data) => ( {
+			id: data.id,
+			value: data.value,
+			label: data.label
+		})));
 		try {
 			const queryResponse = await coreSDK.ok(coreSDK.create_sql_query( {
 				connection_name: 'piagui_connection',
@@ -40,6 +57,7 @@ export const IncidenciasEmbed = ({ embedType }) => {
 			}));
 			const cadenas = await coreSDK.ok(coreSDK.run_sql_query(queryResponse.slug, 'json'))
 				.then((result) => {
+					console.log(JSON.stringify(result));
 					setCadenasOrigen(result.map((data) => ( {
 						id: data.Cadena,
 						value: data.Cadena,
@@ -62,6 +80,7 @@ export const IncidenciasEmbed = ({ embedType }) => {
 
 	const handleCadenaOrigen = async (selectedOption) => {
 		setCadenaOrigenVal(selectedOption);
+		console.log(selectedOption);
 		try {
 			const queryResponse = await coreSDK.ok(coreSDK.create_sql_query( {
 				connection_name: 'piagui_connection',
@@ -71,7 +90,7 @@ export const IncidenciasEmbed = ({ embedType }) => {
 			}));
 			const cadenas = await coreSDK.ok(coreSDK.run_sql_query(queryResponse.slug, 'json'))
 				.then((result) => {
-					setTiendasO(result.map((data) => ( {
+					setTiendasOrigen(result.map((data) => ( {
 						id: data.Cadena,
 						value: data.Tienda,
 						label: data.Tienda
@@ -93,7 +112,7 @@ export const IncidenciasEmbed = ({ embedType }) => {
 			}));
 			const cadenas = await coreSDK.ok(coreSDK.run_sql_query(queryResponse.slug, 'json'))
 				.then((result) => {
-					setTiendasD(result.map((data) => ( {
+					setTiendasDestino(result.map((data) => ( {
 						id: data.Cadena,
 						value: data.Tienda,
 						label: data.Tienda
@@ -144,113 +163,87 @@ export const IncidenciasEmbed = ({ embedType }) => {
 	const { selectedOption } = state;
 	
 	return (
-		<Page height="100%">
-			<Form>
-				<Divider size="8px" customColor="white" mt="u5" borderRadius="100px" />
-      <Grid columns={4}>
-        <Box2 ml='u16'>
-          <Fieldset display="inline-block" legend="Cambio de Formatos en Tiendas">
-          </Fieldset>
-        </Box2>
-        <Box2 ml='u16'>
-        </Box2>
-        <Box2 ml='u16'>
-        </Box2>
-        <Box2 ml='u16'>
-        </Box2>
-
-        <Box2 ml='u16'>
-          <Text>Origen</Text>
-        </Box2>
-        <Box2 ml='u16'>
-        </Box2>
-        <Box2 ml='u16'>
-          <Text>Destino</Text>
-        </Box2>
-        <Box2 ml='u16'>
-        </Box2>
-
-        <Box2 ml='u16'>
-          <label>Cadena</label>
-        </Box2>
-        <Box2 minWidth="200px">
-          <Select
-              placeholder="Cadenas"
-              onChange={handleCadenaOrigen}
-              options={cadenasOrigen}
-            />
-        </Box2>
-        <Box2 ml='u16'>
-          <label>Cadena</label>
-        </Box2>
-        <Box2 minWidth="200px">
-          <Select
-              placeholder="Cadenas"
-              onChange={handleCadenaDestino}
-              options={cadenasDestino}
-            />
-        </Box2>
-
-        <Box2 ml='u16'>
-          <label>Tienda</label>
-        </Box2>
-        <Box2 minWidth="200px">
-          <Select
-              placeholder="Tiendas"
-              onChange={handleTiendaOrigen}
-              options={tiendasOrigen}
-            />
-        </Box2>
-        <Box2 ml='u16'>
-          <label>Tienda</label>
-        </Box2>
-        <Box2 minWidth="200px">
-          <Select
-              placeholder="Tiendas"
-              onChange={handleTiendaDestino}
-              options={tiendasDestino}
-          />
-        </Box2>
-
-
-        <Box2 ml='u16'>
-        </Box2>
-        <Box2 ml='u16'>
-        </Box2>
-        <Box2 ml='u16'>
-        <label>Mes Inicio</label>
-        </Box2>
-        <Box2 minWidth="200px">
-          <Space gap="u15">
-          <Popover
-            content={
-              <Box2 p="u3">
-                <InputDate defaultValue={selectedDate} onChange={handleDate} />
-              </Box2>
-              }>
-            <IconButton icon={<CalendarDay />} label="Calendar" />
-          </Popover>
-          <FieldText readOnly value={selectedDateFormated}></FieldText>
-          </Space>
-        </Box2>
-        
-        <Box2 ml='u8'>
-        </Box2>
-        <Box2 ml='u16'>
-        </Box2>
-        <Box2 ml='u16'>
-          <Button onClick={runModel}>
-                Ejecutar Modelo
-          </Button>
-        </Box2>
-        <Box2 ml='u16'>
-        </Box2>
-        
-      </Grid>
-      <Space justifyContent="center">
-        <ProgressCircular progress={progress} />
-      </Space>
-      </Form>
-    </Page>
-  )
+		<htmlElements.Page height="100%">
+			<htmlElements.Form width="90%" mx="5%">
+				<htmlElements.Grid columns={1}>
+					<htmlElements.Box2 mt='u4'>
+						<htmlElements.Heading as="h1" fontWeight="semiBold" textAlign="center">Cambio de Formatos en Tiendas</htmlElements.Heading>
+					</htmlElements.Box2>
+				</htmlElements.Grid>
+				<htmlElements.Divider size="5px" mb="u6" borderRadius="100px" />
+				<htmlElements.Flex width="100%" justifyContent="space-between">
+					<htmlElements.Flex bg="ui2" alignContent="center"  width="48%">
+						<htmlElements.Fieldset m="u3" legend="Origen">
+							<htmlElements.Flex width="100%">
+								<htmlElements.FlexItem width="20%"/>
+								<htmlElements.FlexItem width="20%">
+									<htmlElements.Text >Cadena</htmlElements.Text>
+								</htmlElements.FlexItem>
+								<htmlElements.FlexItem width="40%">
+									<htmlElements.Select placeholder="Seleccione una cadena" onChange={handleCadenaOrigen} options={cadenasOrigen}/>
+								</htmlElements.FlexItem>
+								<htmlElements.FlexItem width="20%"/>
+							</htmlElements.Flex>
+							<htmlElements.Flex width="100%">
+								<htmlElements.FlexItem width="20%"/>
+								<htmlElements.FlexItem width="20%">
+									<htmlElements.Text >Tienda</htmlElements.Text>
+								</htmlElements.FlexItem>
+								<htmlElements.FlexItem width="40%">
+									<htmlElements.FieldSelect placeholder="Seleccione una tienda" onChange={handleTiendaOrigen} options={tiendasOrigen}/>
+								</htmlElements.FlexItem>
+								<htmlElements.FlexItem width="20%"/>
+							</htmlElements.Flex>
+							<htmlElements.Flex width="100%" alignItems="center" justifyContent="space-between">
+									<htmlElements.FlexItem width="20%"/>
+									<htmlElements.FlexItem width="20%">
+										<htmlElements.Text >Mes, Año</htmlElements.Text>
+									</htmlElements.FlexItem>
+									<htmlElements.FlexItem width="20%">
+										<htmlElements.Select placeholder="MES" options={meses}/>
+									</htmlElements.FlexItem>
+									<htmlElements.FlexItem width="5%" textAlign="center">
+										<htmlElements.Span> , </htmlElements.Span>
+									</htmlElements.FlexItem>
+									<htmlElements.FlexItem width="15%">
+										<htmlElements.InputText type="number" min="1990" max="2030" defaultValue="2022"/>
+									</htmlElements.FlexItem>	
+									<htmlElements.FlexItem width="20%"/>								
+								</htmlElements.Flex>
+						</htmlElements.Fieldset>
+					</htmlElements.Flex>
+					<htmlElements.Flex  bg="ui2" alignContent="center"  width="48%">
+						<htmlElements.Fieldset m="u3" legend="Destino">
+							<htmlElements.Flex width="100%">
+								<htmlElements.FlexItem width="20%"/>
+								<htmlElements.FlexItem width="20%">
+									<htmlElements.Text >Cadena</htmlElements.Text>
+								</htmlElements.FlexItem>
+								<htmlElements.FlexItem width="40%">
+									<htmlElements.FieldSelect width="100%" placeholder="Seleccione una cadena" onChange={handleCadenaDestino} options={cadenasDestino}/>
+								</htmlElements.FlexItem>
+								<htmlElements.FlexItem width="20%"/>
+							</htmlElements.Flex>
+							<htmlElements.Flex width="100%">
+								<htmlElements.FlexItem width="20%"/>
+								<htmlElements.FlexItem width="20%">
+									<htmlElements.Text >Tienda</htmlElements.Text>
+								</htmlElements.FlexItem>
+								<htmlElements.FlexItem width="40%">
+									<htmlElements.FieldSelect placeholder="Seleccione una tienda" onChange={handleTiendaDestino} options={tiendasDestino}/>
+								</htmlElements.FlexItem>
+								<htmlElements.FlexItem width="20%"/>
+							</htmlElements.Flex>
+						</htmlElements.Fieldset>
+					</htmlElements.Flex>
+				</htmlElements.Flex>
+				<htmlElements.Flex width="100%" justifyContent="space-between" alignItems="baseline">
+					<htmlElements.FlexItem width="75%"></htmlElements.FlexItem>
+					<htmlElements.FlexItem width="25%" textAlign="right" mr="1%">
+						<htmlElements.Button onClick={runModel}>Ejecutar Modelo</htmlElements.Button>
+					</htmlElements.FlexItem>
+				</htmlElements.Flex>
+			</htmlElements.Form>
+		</htmlElements.Page>
+	);
 }
